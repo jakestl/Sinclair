@@ -82,6 +82,18 @@
         <source src="https://raw.githubusercontent.com/jakestl/Sinclair/main/BatWhoosh.mp3" type="audio/mpeg">
         <source src="https://github.com/jakestl/Sinclair/blob/main/BatWhoosh.mp3?raw=true" type="audio/mpeg">
     </audio>
+    <audio id="gunshot-audio" preload="auto" crossorigin="anonymous">
+        <source src="https://raw.githubusercontent.com/jakestl/Sinclair/main/GunShot.mp3" type="audio/mpeg">
+        <source src="https://github.com/jakestl/Sinclair/blob/main/GunShot.mp3?raw=true" type="audio/mpeg">
+    </audio>
+    <audio id="payphone-ring-audio" preload="auto" crossorigin="anonymous">
+        <source src="https://raw.githubusercontent.com/jakestl/Sinclair/main/PayPhone.mp3" type="audio/mpeg">
+        <source src="https://github.com/jakestl/Sinclair/blob/main/PayPhone.mp3?raw=true" type="audio/mpeg">
+    </audio>
+    <audio id="creepy-music-audio" loop preload="auto" crossorigin="anonymous">
+        <source src="https://raw.githubusercontent.com/jakestl/Sinclair/main/CreepyMusic.mp3" type="audio/mpeg">
+        <source src="https://github.com/jakestl/Sinclair/blob/main/CreepyMusic.mp3?raw=true" type="audio/mpeg">
+    </audio>
 
     <!-- 3D WebGL Canvas -->
     <canvas id="game-canvas"></canvas>
@@ -213,39 +225,60 @@
         </div>
     </div>
 
-    <!-- Start / Pause Menu Overlay -->
-    <div id="menu-overlay" class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
-        <div class="max-w-lg w-full border-2 border-emerald-600/80 bg-neutral-950 p-8 rounded-lg shadow-[0_0_50px_rgba(16,185,129,0.25)] text-center relative overflow-hidden">
-            <div class="h-3 w-full bg-gradient-to-r from-emerald-700 via-white to-red-700 mb-6 rounded"></div>
-            
-            <p id="menu-subtitle" class="text-emerald-400 text-xl tracking-widest mb-1 vhs-text">EPISODE 01 // ENGINE BUILD</p>
-            <h1 id="menu-title" class="text-5xl sm:text-6xl font-bold mb-2 vhs-text text-white">ROUTE 61 SINCLAIR</h1>
-            <p class="text-gray-400 text-lg mb-6 font-sans">1994 Psychological Horror First-Person Prototype</p>
+    <!-- Start / Pause Menu Overlay (Requirements #3 & #6: SinclairLogo2.jpg Background + Start, How to Play, and Exit buttons) -->
+    <div id="menu-overlay" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-end p-6 sm:p-12 bg-cover bg-center bg-no-repeat" style="background-image: url('https://raw.githubusercontent.com/jakestl/Sinclair/main/SinclairLogo2.jpg'), url('https://github.com/jakestl/Sinclair/blob/main/SinclairLogo2.jpg?raw=true');">
+        <!-- Hidden elements preserved for compatibility -->
+        <p id="menu-subtitle" class="hidden">EPISODE 01 // ENGINE BUILD</p>
+        <h1 id="menu-title" class="hidden">ROUTE 61 SINCLAIR</h1>
+        <p id="music-status" class="hidden"></p>
 
-            <div class="bg-neutral-900/90 border border-neutral-800 p-4 rounded-lg text-left mb-6 space-y-2 text-xl text-gray-200">
-                <div class="text-emerald-400 font-bold border-b border-neutral-800 pb-1 mb-2 vhs-text">NIGHT SHIFT CONTROLS:</div>
+        <!-- Main Title Screen Buttons (Only Start, How to Play, and Exit) -->
+        <div id="title-buttons-group" class="w-full max-w-sm flex flex-col gap-3.5 z-10 mb-2">
+            <button id="start-btn" class="w-full py-3.5 bg-emerald-700/95 hover:bg-emerald-600 active:bg-emerald-800 text-white text-3xl vhs-text rounded-lg border-2 border-emerald-400 shadow-[0_0_25px_rgba(0,0,0,0.9)] transition transform hover:scale-[1.02] cursor-pointer">
+                START
+            </button>
+            <button id="how-to-play-btn" class="w-full py-3.5 bg-neutral-900/95 hover:bg-neutral-800 active:bg-neutral-950 text-white text-3xl vhs-text rounded-lg border-2 border-white/40 shadow-[0_0_25px_rgba(0,0,0,0.9)] transition transform hover:scale-[1.02] cursor-pointer">
+                HOW TO PLAY
+            </button>
+            <button id="exit-btn" class="w-full py-3.5 bg-red-800/95 hover:bg-red-700 active:bg-red-900 text-white text-3xl vhs-text rounded-lg border-2 border-red-400 shadow-[0_0_25px_rgba(0,0,0,0.9)] transition transform hover:scale-[1.02] cursor-pointer">
+                EXIT
+            </button>
+        </div>
+
+        <!-- How to Play Controls Modal (Requirement #6) -->
+        <div id="how-to-play-modal" class="max-w-lg w-full border-2 border-emerald-500/80 bg-neutral-950/95 p-6 sm:p-8 rounded-lg shadow-[0_0_60px_rgba(0,0,0,0.95)] text-center relative z-20 hidden mb-4">
+            <h2 class="text-4xl text-emerald-400 font-bold border-b border-neutral-800 pb-2 mb-4 vhs-text">HOW TO PLAY // CONTROLS</h2>
+            <div class="bg-neutral-900/90 border border-neutral-800 p-4 rounded-lg text-left mb-6 space-y-2.5 text-2xl text-gray-200 vhs-text">
                 <div class="flex justify-between"><span>Move Around:</span> <span class="text-yellow-300">[W, A, S, D]</span></div>
                 <div class="flex justify-between"><span>Look / Aim:</span> <span class="text-yellow-300">[Mouse]</span></div>
                 <div class="flex justify-between"><span>Toggle Flashlight:</span> <span class="text-yellow-300">[F] Key</span></div>
                 <div class="flex justify-between"><span>Interact (Door/Monitor/Register):</span> <span class="text-yellow-300">[E] or Click</span></div>
+                <div class="flex justify-between"><span>Switch Security Cameras:</span> <span class="text-yellow-300">[1 - 3] or [A / D]</span></div>
                 <div class="flex justify-between"><span>Pause Game:</span> <span class="text-yellow-300">[ESC] or [P]</span></div>
             </div>
+            <button id="close-howto-btn" class="w-full py-3 bg-emerald-700 hover:bg-emerald-600 text-white text-2xl vhs-text rounded-lg border-2 border-emerald-400 cursor-pointer">
+                BACK
+            </button>
+        </div>
 
-            <p id="music-status" class="text-emerald-400/90 text-lg mb-5 vhs-text">
-                ♪ CLICK ANYWHERE IF TITLE MUSIC IS MUTED BY BROWSER ♪
-            </p>
-
-            <button id="start-btn" class="w-full py-4 bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-800 text-white text-3xl vhs-text rounded-lg border-2 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.5)] transition transform hover:scale-[1.01] cursor-pointer">
-                CLICK TO ENTER SHIFT
+        <!-- Exit Screen Message -->
+        <div id="exit-game-modal" class="max-w-md w-full border-2 border-red-600/80 bg-neutral-950/95 p-8 rounded-lg shadow-[0_0_60px_rgba(0,0,0,0.95)] text-center relative z-20 hidden mb-6">
+            <h2 class="text-4xl text-red-500 font-bold mb-3 vhs-text">SHIFT TERMINATED</h2>
+            <p class="text-2xl text-gray-300 mb-6 vhs-text">Thanks for playing Route 61 Sinclair.</p>
+            <button id="cancel-exit-btn" class="w-full py-3 bg-neutral-800 hover:bg-neutral-700 text-white text-2xl vhs-text rounded-lg border border-white/30 cursor-pointer">
+                RETURN TO TITLE
             </button>
         </div>
     </div>
 
-    <!-- Game Over Overlay (Round 3 #3) -->
-    <div id="game-over-overlay" class="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-6 hidden">
+    <!-- Blackout / Wake-Up Transition Overlay -->
+    <div id="blackout-overlay" class="fixed inset-0 z-40 bg-black pointer-events-none opacity-0 transition-opacity duration-500"></div>
+
+    <!-- Game Over Overlay -->
+    <div id="game-over-overlay" class="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-6 hidden opacity-0 transition-opacity duration-1000">
         <div class="text-center max-w-xl w-full border-2 border-red-700/80 bg-neutral-950/95 p-10 rounded-lg shadow-[0_0_80px_rgba(185,28,28,0.55)]">
             <h1 class="text-7xl sm:text-8xl font-bold text-red-600 vhs-text tracking-widest mb-4 animate-pulse">GAME OVER</h1>
-            <p class="text-2xl sm:text-3xl text-gray-300 vhs-text mb-8">ESCAPED INMATE #48109 AMBUSHED YOU AT THE PAYPHONE.</p>
+            <p id="game-over-desc" class="text-2xl sm:text-3xl text-gray-300 vhs-text mb-8">ESCAPED INMATE #48109 WAS SHOT DEAD BY POLICE IN THE BACK STORAGE ROOM.</p>
             <button id="restart-btn" class="px-8 py-4 bg-red-800 hover:bg-red-700 active:bg-red-900 text-white text-3xl vhs-text rounded-lg border-2 border-red-400 shadow-[0_0_25px_rgba(220,38,38,0.6)] transition cursor-pointer">
                 RESTART NIGHT SHIFT
             </button>
@@ -1018,8 +1051,32 @@
                 noise.stop(now + dur);
             }
 
-            // Feature 26: Payphone Dual-Tone Ringing Burst
+            // Feature 26 & Requirement #5: Payphone Ringing using PayPhone.mp3
             playPhoneRingBurst(distanceFactor = 1.0) {
+                const ringEl = document.getElementById('payphone-ring-audio');
+                if (ringEl) {
+                    ringEl.volume = Math.max(0.08, Math.min(0.95, 0.9 * distanceFactor));
+                    ringEl.currentTime = 0;
+                    const p = ringEl.play();
+                    if (p !== undefined) {
+                        p.catch(() => {
+                            this.playSynthesizedPhoneRingFallback(distanceFactor);
+                        });
+                        return;
+                    }
+                }
+                this.playSynthesizedPhoneRingFallback(distanceFactor);
+            }
+
+            stopPhoneRingAudio() {
+                const ringEl = document.getElementById('payphone-ring-audio');
+                if (ringEl && !ringEl.paused) {
+                    ringEl.pause();
+                    ringEl.currentTime = 0;
+                }
+            }
+
+            playSynthesizedPhoneRingFallback(distanceFactor = 1.0) {
                 if (!this.initialized) return;
                 const now = this.ctx.currentTime;
                 const dur = 0.85;
@@ -1110,6 +1167,48 @@
                 gain.connect(this.ctx.destination);
                 osc.start(now);
                 osc.stop(now + 0.31);
+            }
+
+            playGunShot() {
+                const gunEl = document.getElementById('gunshot-audio');
+                if (gunEl) {
+                    const clone = gunEl.cloneNode(true);
+                    clone.volume = 0.95;
+                    const p = clone.play();
+                    if (p !== undefined) {
+                        p.catch(() => {
+                            this.playSynthesizedGunShotFallback();
+                        });
+                        return;
+                    }
+                }
+                this.playSynthesizedGunShotFallback();
+            }
+
+            playSynthesizedGunShotFallback() {
+                if (!this.initialized) return;
+                const now = this.ctx.currentTime;
+                const dur = 0.28;
+                const bufSize = Math.floor(this.ctx.sampleRate * dur);
+                const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+                const d = buf.getChannelData(0);
+                for (let i = 0; i < bufSize; i++) {
+                    d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.055));
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buf;
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(2200, now);
+                filter.frequency.exponentialRampToValueAtTime(240, now + dur);
+                const gain = this.ctx.createGain();
+                gain.gain.setValueAtTime(0.55, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start(now);
+                noise.stop(now + dur);
             }
 
             // Feature 26: Payphone Dead Off-Hook Beep-Beep-Beep Tone
@@ -1669,6 +1768,31 @@
             collar.position.set(0, 0.555, 0.005);
             spinePivot.add(collar);
 
+            if (options.hasBlackTie) {
+                const tieMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.55 });
+                const tieKnot = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.038, 0.028), tieMat);
+                tieKnot.position.set(0, 0.515, 0.128);
+                spinePivot.add(tieKnot);
+
+                const tieBlade = new THREE.Mesh(new THREE.BoxGeometry(0.044, 0.34, 0.018), tieMat);
+                tieBlade.position.set(0, 0.34, 0.145);
+                tieBlade.rotation.x = -0.05;
+                spinePivot.add(tieBlade);
+
+                const tieTip = new THREE.Mesh(new THREE.ConeGeometry(0.031, 0.055, 4), tieMat);
+                tieTip.rotation.x = Math.PI;
+                tieTip.rotation.y = Math.PI / 4;
+                tieTip.position.set(0, 0.155, 0.150);
+                spinePivot.add(tieTip);
+
+                // Gold Police Badge on Left Chest
+                const badgeMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.9, roughness: 0.18 });
+                const chestBadge = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.022, 0.012, 6), badgeMat);
+                chestBadge.rotation.x = Math.PI / 2;
+                chestBadge.position.set(0.075, 0.41, 0.146);
+                spinePivot.add(chestBadge);
+            }
+
             // Optional Thick Quilted/Padded Work Vest (Smoothly contoured over the shirt)
             if (options.hasVest) {
                 const vestMat = new THREE.MeshStandardMaterial({ color: options.vestColor || 0x3f2e21, roughness: 0.78 });
@@ -1904,7 +2028,40 @@
             }
 
             // Hair & Hats Contoured to the Sculpted Cranium
-            if (options.hasHat) {
+            if (options.hasPoliceHat) {
+                const backHair = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.148, 22, 16, 0, Math.PI * 2, 0, Math.PI * 0.52),
+                    darkHairMat
+                );
+                backHair.scale.set(0.92, 1.04, 0.98);
+                backHair.rotation.x = -0.52;
+                backHair.position.set(0, 0.02, -0.015);
+                headGroup.add(backHair);
+
+                const policeBlueMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.55 });
+                const visorBlackMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.25, metalness: 0.35 });
+                const goldBadgeMat = new THREE.MeshStandardMaterial({ color: 0xfacc15, metalness: 0.88, roughness: 0.2 });
+
+                const hatBand = new THREE.Mesh(new THREE.CylinderGeometry(0.146, 0.144, 0.048, 24), visorBlackMat);
+                hatBand.scale.set(0.92, 1, 1.04);
+                hatBand.position.set(0, 0.105, 0);
+                headGroup.add(hatBand);
+
+                const hatCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.178, 0.146, 0.078, 8), policeBlueMat);
+                hatCrown.scale.set(0.94, 1, 1.08);
+                hatCrown.position.set(0, 0.155, -0.008);
+                hatCrown.rotation.x = -0.08;
+                headGroup.add(hatCrown);
+
+                const visor = new THREE.Mesh(new THREE.CylinderGeometry(0.148, 0.148, 0.016, 24, 1, false, -Math.PI * 0.45, Math.PI * 0.9), visorBlackMat);
+                visor.position.set(0, 0.088, 0.078);
+                visor.rotation.x = 0.22;
+                headGroup.add(visor);
+
+                const hatBadge = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.044, 0.016), goldBadgeMat);
+                hatBadge.position.set(0, 0.135, 0.154);
+                headGroup.add(hatBadge);
+            } else if (options.hasHat) {
                 const backHair = new THREE.Mesh(
                     new THREE.SphereGeometry(0.150, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.55),
                     darkHairMat
@@ -2016,14 +2173,15 @@
             if (options.isSeated) {
                 if (options.inCar) {
                     spinePivot.rotation.x = -0.08;
-                    leftLegPivot.rotation.x = -1.32;
-                    rightLegPivot.rotation.x = -1.32;
-                    leftLegPivot.rotation.z = -0.08;
-                    rightLegPivot.rotation.z = 0.08;
-                    leftLegPivot.userData.kneePivot.rotation.x = 1.18;
-                    rightLegPivot.userData.kneePivot.rotation.x = 1.18;
-                    leftLegPivot.userData.anklePivot.rotation.x = 0.15;
-                    rightLegPivot.userData.anklePivot.rotation.x = 0.15;
+                    // Raise thighs slightly above horizontal and tuck shins/feet cleanly inside the cabin footwell above the floor pan
+                    leftLegPivot.rotation.x = -1.48;
+                    rightLegPivot.rotation.x = -1.48;
+                    leftLegPivot.rotation.z = -0.06;
+                    rightLegPivot.rotation.z = 0.06;
+                    leftLegPivot.userData.kneePivot.rotation.x = 0.68;
+                    rightLegPivot.userData.kneePivot.rotation.x = 0.68;
+                    leftLegPivot.userData.anklePivot.rotation.x = -0.15;
+                    rightLegPivot.userData.anklePivot.rotation.x = -0.15;
 
                     leftArmPivot.rotation.x = -0.78;
                     rightArmPivot.rotation.x = -0.78;
@@ -2665,16 +2823,32 @@
 
         let doorOpen = false;
         let doorTargetAngle = 0;
+        let doorAutoCloseTimer = 0;
         doorPivot.rotation.y = doorTargetAngle;
+
+        function openFrontDoorWithChime() {
+            if (!doorOpen) {
+                doorOpen = true;
+                doorTargetAngle = -Math.PI / 2.2;
+                sound.playDoorChime();
+            }
+            doorAutoCloseTimer = 1.0;
+        }
 
         interactables.push({
             mesh: doorGlassPane,
             label: 'Glass Entrance Door - Open / Close [E]',
             onInteract: () => {
-                doorOpen = !doorOpen;
-                doorTargetAngle = doorOpen ? -Math.PI / 2.2 : 0;
-                sound.playDoorChime();
-                showSubtitle(doorOpen ? 'The entrance bell chimes softly as the glass door swings open.' : 'You pull the glass entrance door shut.');
+                if (!doorOpen) {
+                    openFrontDoorWithChime();
+                    showSubtitle('The entrance bell chimes softly as the glass door swings open.');
+                } else {
+                    doorOpen = false;
+                    doorTargetAngle = 0;
+                    doorAutoCloseTimer = 0;
+                    sound.playDoorChime();
+                    showSubtitle('You pull the glass entrance door shut.');
+                }
             }
         });
 
@@ -4301,6 +4475,206 @@
         const ambushLight = new THREE.PointLight(0xfef2f2, 0, 6);
         scene.add(ambushLight);
 
+        // --- BACK STORAGE ROOM CAPTIVE CHAIR, TIED PLAYER BODY, RED LIGHTING & POLICE OFFICERS ---
+        const storageCaptiveGroup = new THREE.Group();
+        storageCaptiveGroup.position.set(-2.8, 0, -22.25);
+        storageCaptiveGroup.visible = false;
+        scene.add(storageCaptiveGroup);
+
+        const chairWoodMat = new THREE.MeshStandardMaterial({ color: 0x5c3a21, roughness: 0.78 });
+        const ropeMat = new THREE.MeshStandardMaterial({ color: 0xc2a675, roughness: 0.9 });
+        const captiveJeansMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.82 });
+        const captiveSkinMat = new THREE.MeshStandardMaterial({ color: 0xf3cfb3, roughness: 0.55 });
+        const captiveShirtMat = new THREE.MeshStandardMaterial({ color: 0x0a682e, roughness: 0.7 });
+
+        // Wooden Chair Base, Legs, Seat & Armrests
+        const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.05, 0.54), chairWoodMat);
+        chairSeat.position.set(0, 0.46, 0);
+        storageCaptiveGroup.add(chairSeat);
+
+        [[-0.24, -0.22], [0.24, -0.22], [-0.24, 0.22], [0.24, 0.22]].forEach(([lx, lz]) => {
+            const cLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.024, 0.46, 10), chairWoodMat);
+            cLeg.position.set(lx, 0.23, lz);
+            storageCaptiveGroup.add(cLeg);
+        });
+
+        const chairBack = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.58, 0.05), chairWoodMat);
+        chairBack.position.set(0, 0.76, -0.24);
+        storageCaptiveGroup.add(chairBack);
+
+        [-0.27, 0.27].forEach(ax => {
+            const armPost = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.24, 8), chairWoodMat);
+            armPost.position.set(ax, 0.58, 0.20);
+            storageCaptiveGroup.add(armPost);
+
+            const armRest = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.035, 0.52), chairWoodMat);
+            armRest.position.set(ax, 0.70, 0);
+            storageCaptiveGroup.add(armRest);
+        });
+
+        // Player's Tied-Up Seated Body (Visible when looking down in the chair)
+        const captiveTorso = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.48, 0.22), captiveShirtMat);
+        captiveTorso.position.set(0, 0.72, -0.06);
+        storageCaptiveGroup.add(captiveTorso);
+
+        // Chest ropes wrapping player to the chair
+        [0.64, 0.74, 0.84].forEach(ry => {
+            const chestRope = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.018, 8, 24), ropeMat);
+            chestRope.rotation.x = Math.PI / 2;
+            chestRope.scale.set(1.05, 0.82, 1);
+            chestRope.position.set(0, ry, -0.10);
+            storageCaptiveGroup.add(chestRope);
+        });
+
+        // Player's Arms & Wrists Tied to Chair Armrests
+        [-0.27, 0.27].forEach(sideX => {
+            const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.036, 0.34, 12), captiveSkinMat);
+            forearm.rotation.x = Math.PI / 2;
+            forearm.position.set(sideX, 0.75, 0.05);
+            storageCaptiveGroup.add(forearm);
+
+            [-0.04, 0.02, 0.08].forEach(rz => {
+                const wristRope = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.014, 8, 16), ropeMat);
+                wristRope.position.set(sideX, 0.73, 0.14 + rz);
+                storageCaptiveGroup.add(wristRope);
+            });
+        });
+
+        // Player's Thighs, Shins, Ankles Tied & Bare Feet with Exposed Toes
+        [-0.12, 0.12].forEach(legX => {
+            const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.072, 0.44, 14), captiveJeansMat);
+            thigh.rotation.x = Math.PI / 2;
+            thigh.position.set(legX, 0.53, 0.14);
+            storageCaptiveGroup.add(thigh);
+
+            const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.068, 0.054, 0.42, 14), captiveJeansMat);
+            shin.position.set(legX, 0.30, 0.34);
+            shin.rotation.x = 0.22;
+            storageCaptiveGroup.add(shin);
+
+            // Ankle ropes tying player's legs to front chair legs
+            [0.16, 0.20, 0.24].forEach(ry => {
+                const ankleRope = new THREE.Mesh(new THREE.TorusGeometry(0.075, 0.015, 8, 16), ropeMat);
+                ankleRope.rotation.x = Math.PI / 2;
+                ankleRope.position.set(legX, ry, 0.34);
+                storageCaptiveGroup.add(ankleRope);
+            });
+
+            // Bare Foot & 5 Toes in front of chair so the Indian man can reach for them
+            const bareFoot = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.055, 0.21), captiveSkinMat);
+            bareFoot.position.set(legX, 0.055, 0.46);
+            storageCaptiveGroup.add(bareFoot);
+
+            for (let t = 0; t < 5; t++) {
+                const tx = legX + (legX < 0 ? 1 : -1) * (-0.032 + t * 0.016);
+                const toeR = t === 0 ? 0.014 : 0.010;
+                const toeMesh = new THREE.Mesh(new THREE.SphereGeometry(toeR, 8, 8), captiveSkinMat);
+                toeMesh.scale.set(0.9, 0.75, 1.35);
+                toeMesh.position.set(tx, 0.045, 0.575);
+                storageCaptiveGroup.add(toeMesh);
+            }
+        });
+
+        // Red Lighting in Back Storage Room during Captive Scene (Requirement #2)
+        const storageRedLightMain = new THREE.PointLight(0xff1111, 0, 15, 1.35);
+        storageRedLightMain.position.set(-2.8, 3.25, -21.2);
+        scene.add(storageRedLightMain);
+
+        const storageRedLightFill = new THREE.PointLight(0xdc2626, 0, 12, 1.45);
+        storageRedLightFill.position.set(-2.8, 1.55, -19.8);
+        scene.add(storageRedLightFill);
+
+        // Two Police Officers in Standard Blue Police Uniforms with Black Ties and Hats (Requirement #3 & #4)
+        const policeOfficerFlashlight = createHumanCharacter({
+            skinColor: 0xf3cfb3,
+            shirtColor: 0x1d4ed8,
+            pantsColor: 0x172554,
+            hasBlackTie: true,
+            hasPoliceHat: true,
+            isSeated: false
+        });
+        policeOfficerFlashlight.visible = false;
+        scene.add(policeOfficerFlashlight);
+
+        // Attach 3D Police Flashlight & SpotLight Beam to Officer 1's Right Hand (Aligned with forearm/hand -Y axis so raising the arm aims the beam straight at the Indian man!)
+        const officerFlashlightGroup = new THREE.Group();
+        const flBody = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.022, 0.018, 0.24, 12),
+            new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.7, roughness: 0.3 })
+        );
+        flBody.rotation.x = Math.PI / 2;
+        officerFlashlightGroup.add(flBody);
+
+        const flLens = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.028, 0.022, 0.04, 12),
+            new THREE.MeshBasicMaterial({ color: 0xfef08a })
+        );
+        flLens.rotation.x = Math.PI / 2;
+        flLens.position.set(0, 0, 0.13);
+        officerFlashlightGroup.add(flLens);
+
+        const officerSpotLight = new THREE.SpotLight(0xfffbeb, 0, 16, Math.PI / 4.5, 0.4, 1.4);
+        officerSpotLight.position.set(0, 0, 0.14);
+        officerSpotLight.target.position.set(0, 0, 3.5);
+        officerFlashlightGroup.add(officerSpotLight);
+        officerFlashlightGroup.add(officerSpotLight.target);
+
+        officerFlashlightGroup.position.set(0, -0.05, 0.02);
+        // Rotate +PI/2 around X so local +Z of the flashlight points along -Y of the wrist (the direction the forearm/fingers point when the arm is raised!)
+        officerFlashlightGroup.rotation.x = Math.PI / 2;
+        policeOfficerFlashlight.userData.rightArmPivot.userData.wristPivot.add(officerFlashlightGroup);
+
+        // Officer 2 with Service Pistol & Muzzle Flash (Aligned with forearm/hand -Y axis so raising the arm aims the barrel straight at the Indian man!)
+        const policeOfficerGun = createHumanCharacter({
+            skinColor: 0xe5b887,
+            shirtColor: 0x1d4ed8,
+            pantsColor: 0x172554,
+            hasBlackTie: true,
+            hasPoliceHat: true,
+            isSeated: false
+        });
+        policeOfficerGun.visible = false;
+        scene.add(policeOfficerGun);
+
+        const policePistolGroup = new THREE.Group();
+        const gunMetalMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.85, roughness: 0.25 });
+        const pistolGrip = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.11, 0.045), gunMetalMat);
+        pistolGrip.position.set(0, -0.02, 0);
+        pistolGrip.rotation.x = -0.22;
+        policePistolGroup.add(pistolGrip);
+
+        const pistolSlide = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.042, 0.18), gunMetalMat);
+        pistolSlide.position.set(0, 0.035, 0.06);
+        policePistolGroup.add(pistolSlide);
+
+        const muzzleFlashMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.065, 10, 10),
+            new THREE.MeshBasicMaterial({ color: 0xfef08a })
+        );
+        muzzleFlashMesh.scale.set(0.8, 0.8, 2.2);
+        muzzleFlashMesh.position.set(0, 0.035, 0.19);
+        muzzleFlashMesh.visible = false;
+        policePistolGroup.add(muzzleFlashMesh);
+
+        const muzzleFlashLight = new THREE.PointLight(0xfacc15, 0, 10);
+        muzzleFlashLight.position.set(0, 0.04, 0.22);
+        policePistolGroup.add(muzzleFlashLight);
+
+        policePistolGroup.position.set(0, -0.05, 0.02);
+        // Rotate +PI/2 around X so local +Z of the pistol barrel points along -Y of the wrist (directly along the aimed arm!)
+        policePistolGroup.rotation.x = Math.PI / 2;
+        policeOfficerGun.userData.rightArmPivot.userData.wristPivot.add(policePistolGroup);
+
+        // Blood pool under the Indian man after being shot dead
+        const inmateBloodPool = new THREE.Mesh(
+            new THREE.CircleGeometry(0.55, 24),
+            new THREE.MeshStandardMaterial({ color: 0x7f1d1d, roughness: 0.2, metalness: 0.15 })
+        );
+        inmateBloodPool.rotation.x = -Math.PI / 2;
+        inmateBloodPool.position.set(-2.8, 0.026, -21.05);
+        inmateBloodPool.visible = false;
+        scene.add(inmateBloodPool);
+
         const gameOverSequence = {
             active: false,
             timer: 0,
@@ -4309,8 +4683,74 @@
             startPitch: 0,
             batWhooshPlayed: false,
             knockoutThudPlayed: false,
+            blackoutStarted: false,
+            wokeUpInStorage: false,
+            toeLineSpoken: false,
+            secondToeLineSpoken: false,
+            kneelStartX: -2.8,
+            policeRushedIn: false,
+            shotsFiredCount: 0,
+            muzzleFlashTimer: 0,
+            finalLineSpoken: false,
             screenShown: false
         };
+
+        function setupBackStorageWakeUpScene() {
+            // Turn off handheld flashlight & ambush light so the red back-room lighting dominates
+            flashlight.intensity = 0;
+            ambushLight.intensity = 0;
+
+            // Start CreepyMusic.mp3 for the tied-up final scene (Requirement #6)
+            const creepyMusicEl = document.getElementById('creepy-music-audio');
+            if (creepyMusicEl) {
+                creepyMusicEl.currentTime = 0;
+                creepyMusicEl.volume = 0.68;
+                creepyMusicEl.play().catch(() => {});
+            }
+
+            // Enable crimson red lighting in the back storage room (Requirement #2)
+            storageRedLightMain.intensity = 2.4;
+            storageRedLightFill.intensity = 1.65;
+            if (window.gasStationLightTubes) {
+                window.gasStationLightTubes.slice(-2).forEach(tube => {
+                    if (tube.material && tube.material.color) tube.material.color.setHex(0xdc2626);
+                });
+            }
+
+            // Show captive chair & tied-up player body in the back storage room
+            storageCaptiveGroup.visible = true;
+            player.pos.set(-2.8, 1.18, -22.28);
+            player.yaw = Math.PI; // Facing +Z (-21.05) toward the Indian man and the storage doorway
+
+            // Hide the baseball bat and position the Indian man standing right in front of the player, FACING THE PLAYER (-Z -> rotation.y = Math.PI)
+            baseballBatGroup.visible = false;
+            ambushAttackerMan.visible = true;
+            ambushAttackerMan.position.set(-2.8, 0, -21.05);
+            ambushAttackerMan.rotation.set(0, Math.PI, 0); // Character front is +Z, so rotation.y = Math.PI faces -Z directly toward the seated player!
+
+            const { pelvisGroup, spinePivot, neckPivot, headGroup, leftLegPivot, rightLegPivot, leftArmPivot, rightArmPivot } = ambushAttackerMan.userData;
+            pelvisGroup.position.set(0, 0.75, 0);
+            pelvisGroup.rotation.set(0, 0, 0);
+            spinePivot.position.set(0, 0.78, 0);
+            spinePivot.rotation.set(0.08, 0, 0);
+            neckPivot.rotation.set(0.18, 0, 0);
+            headGroup.rotation.set(0.12, 0, 0);
+            leftLegPivot.rotation.set(0, 0, 0);
+            rightLegPivot.rotation.set(0, 0, 0);
+            leftLegPivot.userData.kneePivot.rotation.set(0.04, 0, 0);
+            rightLegPivot.userData.kneePivot.rotation.set(0.04, 0, 0);
+            leftArmPivot.rotation.set(-0.22, 0, 0.08);
+            rightArmPivot.rotation.set(-0.22, 0, -0.08);
+            leftArmPivot.userData.elbowPivot.rotation.set(-0.25, 0, 0);
+            rightArmPivot.userData.elbowPivot.rotation.set(-0.25, 0, 0);
+
+            // Keep HUD visible solely for the narrative subtitle box (hide reticle & to-do panel)
+            hud.classList.remove('hidden');
+            reticle.classList.add('hidden');
+            interactPrompt.classList.add('hidden');
+            const todoPanel = document.getElementById('todo-panel');
+            if (todoPanel) todoPanel.classList.add('hidden');
+        }
 
         function triggerFinalPayphoneAmbush() {
             if (gameOverSequence.active) return;
@@ -4318,13 +4758,23 @@
             gameOverSequence.timer = 0;
             gameOverSequence.batWhooshPlayed = false;
             gameOverSequence.knockoutThudPlayed = false;
+            gameOverSequence.blackoutStarted = false;
+            gameOverSequence.wokeUpInStorage = false;
+            gameOverSequence.toeLineSpoken = false;
+            gameOverSequence.secondToeLineSpoken = false;
+            gameOverSequence.kneelStartX = -2.8;
+            gameOverSequence.policeRushedIn = false;
+            gameOverSequence.shotsFiredCount = 0;
+            gameOverSequence.muzzleFlashTimer = 0;
+            gameOverSequence.finalLineSpoken = false;
             gameOverSequence.screenShown = false;
 
             // Place the Indian man right behind the player outside the front (+Z) of the phone booth
             const attackerX = player.pos.x;
             const attackerZ = player.pos.z + 1.18;
+            baseballBatGroup.visible = true;
             ambushAttackerMan.position.set(attackerX, 0, attackerZ);
-            ambushAttackerMan.rotation.y = Math.PI; // Facing -Z directly toward the player
+            ambushAttackerMan.rotation.set(0, Math.PI, 0); // Facing -Z directly toward the player
             ambushAttackerMan.visible = true;
 
             ambushLight.position.set(attackerX, 2.05, attackerZ - 0.35);
@@ -4337,8 +4787,6 @@
             rArm.userData.elbowPivot.rotation.set(-0.65, 0, 0);
             lArm.rotation.set(-1.1, -0.3, 0.25);
 
-            gameOverSequence.startYaw = player.yaw;
-            // Facing +Z (where attacker stands behind player) corresponds to yaw = Math.PI
             const currentNorm = Math.atan2(Math.sin(player.yaw), Math.cos(player.yaw));
             gameOverSequence.startYaw = currentNorm;
             gameOverSequence.targetYaw = Math.PI;
@@ -4361,6 +4809,7 @@
                     payphoneState.ringing = false;
                     payphoneState.secondRingActive = false;
                     phoneRingLight.intensity = 0;
+                    sound.stopPhoneRingAudio();
                     sound.playFlashlightClick();
                     triggerFinalPayphoneAmbush();
                     return;
@@ -4370,6 +4819,7 @@
                     payphoneState.answered = true;
                     payphoneState.firstCallAnswered = true;
                     phoneRingLight.intensity = 0;
+                    sound.stopPhoneRingAudio();
                     sound.playFlashlightClick();
                     sound.playDeadPhoneBeepSequence();
 
@@ -5446,7 +5896,7 @@
             inCar: true,
             carSeatScale: 0.78
         });
-        redCarSeatedDriver.position.set(0.42, -0.06, -0.06);
+        redCarSeatedDriver.position.set(0.42, 0.02, -0.06);
         redCarGroup.add(redCarSeatedDriver);
 
         // Walking Bearded Man NPC for Store Sequence
@@ -5502,11 +5952,12 @@
             const dz = target.z - npcGroup.position.z;
             const dist = Math.hypot(dx, dz);
 
-            // Auto-open store front door when NPC passes through doorway (Z near -11)
-            if (Math.abs(npcGroup.position.z + 11) < 1.3 && Math.abs(npcGroup.position.x) < 1.5 && !doorOpen) {
-                doorOpen = true;
-                doorTargetAngle = -Math.PI / 2.2;
-                sound.playDoorChime();
+            // Auto-open store front door & chime when NPC walks through doorway (Z near -11)
+            const nextStepZ = dist < 0.15 ? target.z : npcGroup.position.z + (dz / dist) * Math.min(dist, speed * dt);
+            const crossesDoorLine = (npcGroup.position.z + 11) * (nextStepZ + 11) <= 0;
+            const inDoorThreshold = Math.abs(nextStepZ + 11) < 0.95 && Math.abs(npcGroup.position.x) < 1.4;
+            if ((crossesDoorLine || inDoorThreshold) && !doorOpen) {
+                openFrontDoorWithChime();
             }
 
             if (dist < 0.15) {
@@ -5914,7 +6365,7 @@
             inCar: true,
             carSeatScale: 0.78
         });
-        blueCarDriver.position.set(0.42, -0.06, -0.06);
+        blueCarDriver.position.set(0.42, 0.02, -0.06);
         bluePassingCar.add(blueCarDriver);
 
         const blueCarEvents = [
@@ -5941,7 +6392,7 @@
             inCar: true,
             carSeatScale: 0.78
         });
-        brownCarSeatedDriver.position.set(0.42, -0.06, -0.06);
+        brownCarSeatedDriver.position.set(0.42, 0.02, -0.06);
         brownSedanGroup.add(brownCarSeatedDriver);
 
         const blondeWomanNPC = createHumanCharacter({
@@ -5985,6 +6436,11 @@
                 player.carryingCigarettes = false;
                 updateCarriedBadge();
                 blondeWomanEvent.state = 'WALK_TO_CAR';
+                // Requirement #2: Make Indian man disappear from the toilet as soon as the woman checks out with her cigarettes
+                bathroomSeatedMan.visible = false;
+                stallLocked = false;
+                stallDoorTargetAngle = 1.35;
+                if (stallDoorCollider) stallDoorCollider.active = false;
                 // Round 2 #3: 15 seconds after the woman customer pays for her cigarettes, trigger the woman's scream
                 screamAfterPhoneState.timerActive = true;
                 screamAfterPhoneState.timer = 15.0;
@@ -6332,15 +6788,68 @@
                 hud.classList.add('hidden');
                 menuSubtitle.textContent = 'SHIFT PAUSED';
                 menuTitle.textContent = 'GAME PAUSED';
-                startBtn.textContent = 'RESUME NIGHT SHIFT';
+                startBtn.textContent = 'START';
                 playMenuMusic();
             }
+        }
+
+        const howToPlayBtn = document.getElementById('how-to-play-btn');
+        const closeHowToBtn = document.getElementById('close-howto-btn');
+        const howToPlayModal = document.getElementById('how-to-play-modal');
+        const exitBtn = document.getElementById('exit-btn');
+        const cancelExitBtn = document.getElementById('cancel-exit-btn');
+        const exitGameModal = document.getElementById('exit-game-modal');
+        const titleButtonsGroup = document.getElementById('title-buttons-group');
+
+        if (howToPlayBtn) {
+            howToPlayBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.init();
+                sound.playFlashlightClick();
+                titleButtonsGroup.classList.add('hidden');
+                exitGameModal.classList.add('hidden');
+                howToPlayModal.classList.remove('hidden');
+            });
+        }
+
+        if (closeHowToBtn) {
+            closeHowToBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.playFlashlightClick();
+                howToPlayModal.classList.add('hidden');
+                titleButtonsGroup.classList.remove('hidden');
+            });
+        }
+
+        if (exitBtn) {
+            exitBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.init();
+                sound.playFlashlightClick();
+                pauseMenuMusic();
+                titleButtonsGroup.classList.add('hidden');
+                howToPlayModal.classList.add('hidden');
+                exitGameModal.classList.remove('hidden');
+            });
+        }
+
+        if (cancelExitBtn) {
+            cancelExitBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.playFlashlightClick();
+                playMenuMusic();
+                exitGameModal.classList.add('hidden');
+                titleButtonsGroup.classList.remove('hidden');
+            });
         }
 
         startBtn.addEventListener('click', () => {
             sound.init();
             pauseMenuMusic();
             updateTodoUI();
+            if (howToPlayModal) howToPlayModal.classList.add('hidden');
+            if (exitGameModal) exitGameModal.classList.add('hidden');
+            if (titleButtonsGroup) titleButtonsGroup.classList.remove('hidden');
             if (isTouchDevice) {
                 isLocked = true;
                 document.body.classList.add('playing');
@@ -6372,7 +6881,7 @@
                 menuOverlay.classList.remove('hidden');
                 menuSubtitle.textContent = 'SHIFT PAUSED';
                 menuTitle.textContent = 'GAME PAUSED';
-                startBtn.textContent = 'RESUME NIGHT SHIFT';
+                startBtn.textContent = 'START';
                 playMenuMusic();
                 Object.keys(keys).forEach(k => keys[k] = false);
             }
@@ -6486,7 +6995,14 @@
             const dt = Math.min(clock.getDelta(), 0.1);
             const elapsed = clock.getElapsedTime();
 
-            // 1. Animate Front Glass Door, Exterior Bathroom Door, Bathroom Stall Door & Ice Cooler Doors
+            // 1. Animate Front Glass Door (with 1-second auto-close), Exterior Bathroom Door, Bathroom Stall Door & Ice Cooler Doors
+            if (doorOpen && doorAutoCloseTimer > 0) {
+                doorAutoCloseTimer -= dt;
+                if (doorAutoCloseTimer <= 0) {
+                    doorOpen = false;
+                    doorTargetAngle = 0;
+                }
+            }
             doorPivot.rotation.y += (doorTargetAngle - doorPivot.rotation.y) * Math.min(1, dt * 8);
             bathDoorPivot.rotation.y += (bathDoorTargetAngle - bathDoorPivot.rotation.y) * Math.min(1, dt * 8);
             stallDoorPivot.rotation.y += (stallDoorTargetAngle - stallDoorPivot.rotation.y) * Math.min(1, dt * 7);
@@ -6565,8 +7081,8 @@
                     showSubtitle('A low engine rumble approaches from the highway...');
                 }
 
-                // At 60s into shift (10s sooner), Bearded Man exits car and walks into store to look at chips
-                if (carEvent.playTimeElapsed >= 60.0 && carEvent.parked && beardedManEvent.state === 'IN_CAR') {
+                // Requirement #5: At 50s into shift (10s sooner), Bearded Man exits car and walks into store to look at chips
+                if (carEvent.playTimeElapsed >= 50.0 && carEvent.parked && beardedManEvent.state === 'IN_CAR') {
                     beardedManEvent.state = 'WALK_TO_CHIPS';
                     redCarSeatedDriver.visible = false;
                     beardedManNPC.position.set(7.4, 0, -7.8);
@@ -6590,7 +7106,7 @@
                 }
 
                 // At 80s into shift, Bearded Man walks from chip shelves to cash register to pay
-                if (carEvent.playTimeElapsed >= 80.0 && beardedManEvent.state === 'AT_CHIPS') {
+                if (carEvent.playTimeElapsed >= 70.0 && beardedManEvent.state === 'AT_CHIPS') {
                     beardedManEvent.state = 'WALK_TO_REGISTER';
                     startWaypointWalk(
                         beardedManNPC,
@@ -6891,10 +7407,20 @@
                 }
             }
 
-            // Round 3 #3 & #4: Animate Rapid Spin-Around, Baseball Bat Swing, Knockout Fall to Ground & Game Over Screen
+            // Animate Payphone Baseball Bat Ambush -> Blackout -> Back Storage Room Red-Lit Captive Scene -> Police Rescue -> Game Over
             if (gameOverSequence.active) {
                 gameOverSequence.timer += dt;
                 const t = gameOverSequence.timer;
+                const blackoutEl = document.getElementById('blackout-overlay');
+
+                // Handle Muzzle Flash Decay
+                if (gameOverSequence.muzzleFlashTimer > 0) {
+                    gameOverSequence.muzzleFlashTimer = Math.max(0, gameOverSequence.muzzleFlashTimer - dt);
+                    if (gameOverSequence.muzzleFlashTimer <= 0) {
+                        muzzleFlashMesh.visible = false;
+                        muzzleFlashLight.intensity = 0;
+                    }
+                }
 
                 if (t <= 0.34) {
                     // Phase 1: Rapidly spin player around 180 degrees to face the Indian man behind them
@@ -6921,30 +7447,233 @@
                     spine.rotation.y = -0.35 + swingEase * 0.85;
                     spine.rotation.x = 0.05 + swingEase * 0.22;
 
-                    // Step forward slightly into the swing
                     ambushAttackerMan.position.z = (player.pos.z + 1.18) - swingEase * 0.28;
                     camera.position.set(player.pos.x, player.pos.y, player.pos.z);
                     camera.rotation.set(-0.04, gameOverSequence.targetYaw, 0, 'YXZ');
-                } else if (t <= 1.85) {
-                    // Phase 3: Knocked out — POV drops to the ground and rolls sideways
+                } else if (t <= 1.35) {
+                    // Phase 3: Knocked out — POV drops to the ground as screen goes pitch black
                     if (!gameOverSequence.knockoutThudPlayed) {
                         gameOverSequence.knockoutThudPlayed = true;
                         sound.playKnockoutThud();
+                        subtitleBox.classList.add('hidden');
+                        if (blackoutEl) blackoutEl.style.opacity = '1';
                     }
-                    const p = Math.min(1, (t - 0.78) / 0.85);
+                    const p = Math.min(1, (t - 0.78) / 0.52);
                     const fallEase = 1 - Math.pow(1 - p, 2);
                     const dropY = player.pos.y - fallEase * 1.48;
                     const rollZ = fallEase * 0.72;
                     const pitchDown = -0.04 - fallEase * 0.34;
                     camera.position.set(player.pos.x + fallEase * 0.18, Math.max(0.20, dropY), player.pos.z - fallEase * 0.15);
                     camera.rotation.set(pitchDown, gameOverSequence.targetYaw + fallEase * 0.25, rollZ, 'YXZ');
+                } else if (t <= 3.65) {
+                    // Phase 4: Screen stays completely black for a couple seconds while relocating to the back storage room
+                    if (!gameOverSequence.blackoutStarted) {
+                        gameOverSequence.blackoutStarted = true;
+                        if (blackoutEl) blackoutEl.style.opacity = '1';
+                        setupBackStorageWakeUpScene();
+                    }
+                    camera.position.set(-2.8, 1.18, -22.28);
+                    camera.rotation.set(-0.35, Math.PI, 0, 'YXZ');
+                } else if (t <= 14.25) {
+                    // Phase 5: Player wakes up tied in a chair in the red-lit back storage room; Indian man speaks his lines and paces slowly in front of the player
+                    if (!gameOverSequence.wokeUpInStorage) {
+                        gameOverSequence.wokeUpInStorage = true;
+                        if (blackoutEl) blackoutEl.style.opacity = '0';
+                    }
+                    if (t >= 4.25 && !gameOverSequence.toeLineSpoken) {
+                        gameOverSequence.toeLineSpoken = true;
+                        showSubtitle('Indian Man: "You have beautiful toes. They look absolutely delicious."');
+                    }
+                    if (t >= 9.05 && !gameOverSequence.secondToeLineSpoken) {
+                        gameOverSequence.secondToeLineSpoken = true;
+                        showSubtitle('Indian Man: "your toes might be some of the nicest I\'ve ever seen."');
+                    }
+
+                    // Subtle groggy head movement & eye-tracking following the Indian man as he paces
+                    const wakeP = Math.min(1, (t - 3.65) / 1.4);
+                    const wakeEase = 1 - Math.pow(1 - wakeP, 3);
+
+                    if (t < 8.85) {
+                        // Standing directly in front of the player, facing the player (rotation.y = Math.PI)
+                        ambushAttackerMan.position.set(-2.8, 0, -21.05);
+                        ambushAttackerMan.rotation.set(0, Math.PI, 0);
+                        animateCharacterWalk(ambushAttackerMan, elapsed, false);
+                        ambushAttackerMan.userData.headGroup.rotation.x = 0.15 + Math.sin(elapsed * 2.2) * 0.03;
+
+                        const lookPitch = -0.42 + wakeEase * 0.46 + Math.sin(elapsed * 1.8) * 0.025;
+                        const lookYaw = Math.PI + Math.sin(elapsed * 1.1) * 0.04;
+                        const groggyRoll = (1 - wakeEase) * 0.18 + Math.cos(elapsed * 1.5) * 0.015;
+                        camera.position.set(-2.8, 1.18, -22.28);
+                        camera.rotation.set(lookPitch, lookYaw, groggyRoll, 'YXZ');
+                    } else {
+                        // Pacing slowly back and forth in front of the player while keeping his eyes/body turned toward the player
+                        const paceTime = t - 8.85;
+                        const paceDur = 5.4;
+                        const pacePhase = (paceTime / paceDur) * Math.PI * 2; // Full slow back-and-forth cycle returning to center (-2.8)
+                        const paceOffset = Math.sin(pacePhase) * 0.68;
+                        const paceVel = Math.cos(pacePhase);
+
+                        ambushAttackerMan.position.set(-2.8 + paceOffset, 0, -21.05);
+                        // Keep facing the player (Math.PI) with a slight torso angle toward the direction of his slow pace
+                        ambushAttackerMan.rotation.set(0, Math.PI + paceVel * 0.28, 0);
+                        animateCharacterWalk(ambushAttackerMan, elapsed * 0.55, true);
+                        // Turn neck/head to stare directly at the player's feet/face while pacing
+                        ambushAttackerMan.userData.neckPivot.rotation.y = -paceVel * 0.28;
+                        ambushAttackerMan.userData.headGroup.rotation.x = 0.18;
+                        gameOverSequence.kneelStartX = ambushAttackerMan.position.x;
+
+                        const lookPitch = 0.02 + Math.sin(elapsed * 1.6) * 0.02;
+                        const lookYaw = Math.PI - paceOffset * 0.35;
+                        camera.position.set(-2.8, 1.18, -22.28);
+                        camera.rotation.set(lookPitch, lookYaw, 0, 'YXZ');
+                    }
+                } else if (t <= 16.15) {
+                    // Phase 6: Indian man kneels down in front of the player (facing the player) and reaches both hands toward the player's bare feet
+                    const p = Math.min(1, (t - 14.25) / 1.55);
+                    const ease = p * p * (3 - 2 * p);
+
+                    // Camera glances down toward the kneeling man and the player's tied feet
+                    const lookPitch = 0.02 - ease * 0.46;
+                    camera.position.set(-2.8, 1.18, -22.28);
+                    camera.rotation.set(lookPitch, Math.PI, 0, 'YXZ');
+
+                    // Kneel posture facing the player (rotation.y = Math.PI): lower pelvis & spine, bend knees, lean forward, reach both arms out toward player's toes (Z = -21.68)
+                    const curX = gameOverSequence.kneelStartX + (-2.8 - gameOverSequence.kneelStartX) * ease;
+                    ambushAttackerMan.position.set(curX, -ease * 0.36, -21.05 - ease * 0.26);
+                    ambushAttackerMan.rotation.set(0, Math.PI, 0);
+                    const { pelvisGroup, spinePivot, neckPivot, headGroup, leftLegPivot, rightLegPivot, leftArmPivot, rightArmPivot } = ambushAttackerMan.userData;
+                    spinePivot.rotation.set(0.08 + ease * 0.58, 0, 0);
+                    neckPivot.rotation.set(0.18 - ease * 0.35, 0, 0);
+                    headGroup.rotation.set(0.12 - ease * 0.25, 0, 0);
+
+                    leftLegPivot.rotation.x = -ease * 1.15;
+                    rightLegPivot.rotation.x = -ease * 0.35;
+                    leftLegPivot.userData.kneePivot.rotation.x = ease * 1.85;
+                    rightLegPivot.userData.kneePivot.rotation.x = ease * 1.45;
+
+                    // Reach both arms & fingers forward (+Z in local space, which points -Z toward player since rotation.y = Math.PI)
+                    leftArmPivot.rotation.set(-0.22 - ease * 1.12, 0.12 * ease, 0.08 - ease * 0.16);
+                    rightArmPivot.rotation.set(-0.22 - ease * 1.12, -0.12 * ease, -0.08 + ease * 0.16);
+                    leftArmPivot.userData.elbowPivot.rotation.x = -0.25 - ease * 0.18;
+                    rightArmPivot.userData.elbowPivot.rotation.x = -0.25 - ease * 0.18;
+                } else if (t <= 17.15) {
+                    // Phase 7: Right after he reaches for the player's feet, two police officers rush into the back storage room FACING THE PLAYER!
+                    if (!gameOverSequence.policeRushedIn) {
+                        gameOverSequence.policeRushedIn = true;
+                        sound.playHeavyDoorLatch();
+                        policeOfficerFlashlight.visible = true;
+                        policeOfficerGun.visible = true;
+                        officerSpotLight.intensity = 2.6;
+                        policeOfficerFlashlight.position.set(-3.55, 0, -18.5);
+                        policeOfficerGun.position.set(-2.95, 0, -18.5);
+                    }
+                    const p = Math.min(1, (t - 16.15) / 0.95);
+                    const ease = 1 - Math.pow(1 - p, 2);
+
+                    // Officers rush through the back storage doorway (at X = -3.3, Z = -19.0) into firing position, angled directly toward the kneeling Indian man at (-2.8, 0.5, -21.31)
+                    policeOfficerFlashlight.position.set(-3.55 - ease * 0.10, 0, -18.5 - ease * 1.35);
+                    policeOfficerFlashlight.rotation.y = Math.PI + 0.42;
+
+                    policeOfficerGun.position.set(-2.95 + ease * 0.35, 0, -18.5 - ease * 1.25);
+                    policeOfficerGun.rotation.y = Math.PI - 0.12;
+
+                    if (p < 0.92) {
+                        animateCharacterWalk(policeOfficerFlashlight, elapsed * 1.5, true);
+                        animateCharacterWalk(policeOfficerGun, elapsed * 1.5, true);
+                    } else {
+                        animateCharacterWalk(policeOfficerFlashlight, elapsed, false);
+                        animateCharacterWalk(policeOfficerGun, elapsed, false);
+                    }
+
+                    // Aim flashlight & pistol directly downward and forward at the kneeling Indian man (total arm + elbow pitch ~ -1.15 rad aims straight at his chest/back)
+                    const flArm = policeOfficerFlashlight.userData.rightArmPivot;
+                    flArm.rotation.set(-1.12, 0, 0);
+                    flArm.userData.elbowPivot.rotation.set(-0.08, 0, 0);
+
+                    const gunArm = policeOfficerGun.userData.rightArmPivot;
+                    const gunLeftArm = policeOfficerGun.userData.leftArmPivot;
+                    gunArm.rotation.set(-1.15, 0, 0);
+                    gunArm.userData.elbowPivot.rotation.set(-0.05, 0, 0);
+                    gunLeftArm.rotation.set(-1.12, -0.22, 0.22);
+                    gunLeftArm.userData.elbowPivot.rotation.set(-0.10, 0, 0);
+
+                    // Player camera lifts slightly to watch the officers rush in behind the kneeling Indian man
+                    const camPitch = -0.44 + ease * 0.32;
+                    camera.position.set(-2.8, 1.18, -22.28);
+                    camera.rotation.set(camPitch, Math.PI, 0, 'YXZ');
+                } else if (t <= 19.55) {
+                    // Phase 8: Police officers shoot 4 times (using GunShot.mp3) and kill the Indian man
+                    const shotTimes = [17.25, 17.65, 18.05, 18.45];
+                    if (
+                        gameOverSequence.shotsFiredCount < 4 &&
+                        t >= shotTimes[gameOverSequence.shotsFiredCount]
+                    ) {
+                        gameOverSequence.shotsFiredCount++;
+                        sound.playGunShot();
+                        muzzleFlashMesh.visible = true;
+                        muzzleFlashLight.intensity = 3.8;
+                        gameOverSequence.muzzleFlashTimer = 0.09;
+                    }
+
+                    // Gun recoil on Officer 2 while keeping barrel aimed at the Indian man
+                    const recoil = gameOverSequence.muzzleFlashTimer > 0 ? 0.18 : 0;
+                    policeOfficerGun.userData.rightArmPivot.rotation.x = -1.15 - recoil;
+                    policeOfficerFlashlight.userData.rightArmPivot.rotation.x = -1.12;
+
+                    // Indian man jolts with each shot and collapses dead onto the storage floor
+                    const fallStart = 17.55;
+                    if (t < fallStart) {
+                        const jolt = (gameOverSequence.shotsFiredCount % 2 === 1) ? 0.14 : -0.10;
+                        ambushAttackerMan.userData.spinePivot.rotation.z = jolt;
+                        ambushAttackerMan.userData.spinePivot.rotation.x = 0.55 - Math.abs(jolt);
+                    } else {
+                        const fallP = Math.min(1, (t - fallStart) / 1.15);
+                        const fallEase = fallP * fallP * (3 - 2 * fallP);
+                        ambushAttackerMan.position.set(
+                            -2.8 - fallEase * 0.22,
+                            -0.36 - fallEase * 0.38,
+                            -21.31 + fallEase * 0.25
+                        );
+                        ambushAttackerMan.rotation.z = fallEase * (Math.PI / 2.05);
+                        ambushAttackerMan.rotation.y = Math.PI + fallEase * 0.25;
+                        ambushAttackerMan.userData.spinePivot.rotation.x = 0.66 * (1 - fallEase);
+                        if (fallP > 0.65) {
+                            inmateBloodPool.visible = true;
+                        }
+                    }
+
+                    camera.position.set(-2.8, 1.18, -22.28);
+                    camera.rotation.set(-0.14, Math.PI, 0, 'YXZ');
+                } else if (t <= 23.25) {
+                    // Phase 9: Officers lower weapons slightly while facing the player and deliver final line
+                    if (!gameOverSequence.finalLineSpoken) {
+                        gameOverSequence.finalLineSpoken = true;
+                        muzzleFlashMesh.visible = false;
+                        muzzleFlashLight.intensity = 0;
+                        inmateBloodPool.visible = true;
+                        showSubtitle('Police Officers: "We got the bastard. It\'s finally over."');
+                    }
+                    // Lower pistol slightly after shooting
+                    const relaxP = Math.min(1, (t - 19.55) / 1.2);
+                    policeOfficerGun.userData.rightArmPivot.rotation.x = -1.38 + relaxP * 0.45;
+                    policeOfficerGun.userData.leftArmPivot.rotation.x = -1.32 + relaxP * 0.55;
+
+                    camera.position.set(-2.8, 1.18, -22.28);
+                    camera.rotation.set(-0.08, Math.PI, 0, 'YXZ');
                 } else {
-                    // Phase 4: Display "Game Over" overlay
+                    // Phase 10: Fade smoothly to the Game Over screen (Requirement #6)
                     if (!gameOverSequence.screenShown) {
                         gameOverSequence.screenShown = true;
                         document.body.classList.remove('playing');
                         hud.classList.add('hidden');
-                        document.getElementById('game-over-overlay').classList.remove('hidden');
+                        const goOverlay = document.getElementById('game-over-overlay');
+                        if (goOverlay) {
+                            goOverlay.classList.remove('hidden');
+                            requestAnimationFrame(() => {
+                                goOverlay.classList.remove('opacity-0');
+                                goOverlay.classList.add('opacity-100');
+                            });
+                        }
                         if (document.pointerLockElement) {
                             document.exitPointerLock();
                         }
